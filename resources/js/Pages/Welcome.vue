@@ -1,15 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref, defineProps, onMounted, computed } from "vue";
-import axios from 'axios';
 
-import { onMounted } from 'vue'
-import { initFlowbite } from 'flowbite'
-
-// initialize components based on data attribute selectors
-onMounted(() => {
-    initFlowbite();
-})
 
 defineProps({
     canLogin: {
@@ -31,9 +23,7 @@ defineProps({
 const categories = ref([]);
         const selectedCategory = ref(null);
 
-        const categories = ref([]);
         const total = ref(0);
-        const selectedCategory = ref('');
 
         const fetchCategories = async () => {
             try {
