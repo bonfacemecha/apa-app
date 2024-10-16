@@ -1,7 +1,11 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref, defineProps, onMounted, computed } from "vue";
+import moment from "moment";
 
+const dateTime = (value) => {
+    return moment(value).format("D/M/YYYY h:mmA");
+};
 
 defineProps({
     canLogin: {
@@ -21,38 +25,39 @@ defineProps({
 });
 
 const categories = ref([]);
-        const selectedCategory = ref(null);
+const selectedCategory = ref(null);
 
-        const total = ref(0);
+const total = ref(0);
 
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get('https://api.chucknorris.io/jokes/categories');
-                categories.value = response.data; // Set categories
-                // Optionally fetch jokes for the first category by default
-                if (categories.value.length) {
-                    selectedCategory.value = categories.value[0];
-                    fetchJokes(selectedCategory.value);
-                }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
+const fetchCategories = async () => {
+    try {
+        const response = await axios.get('https://api.chucknorris.io/jokes/categories');
+        categories.value = response.data; // Set categories
+        // Optionally fetch jokes for the first category by default
+        if (categories.value.length) {
+            selectedCategory.value = categories.value[0];
+            fetchJokes(selectedCategory.value);
+        }
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+    }
+};
 
 
-        const jokes = ref([]);
+const jokes = ref([]);
 
-        const fetchJokes = async () => {
-            try {
-                const response = await axios.get('https://api.chucknorris.io/jokes/search?query=food');
-                jokes.value = response.data.result; // Adjust based on the actual response structure
-            } catch (error) {
-                console.error('Error fetching jokes:', error);
-            }
-        };
+const fetchJokes = async () => {
+    try {
+        const response = await axios.get('https://api.chucknorris.io/jokes/search?query=food');
+        jokes.value = response.data.result; // Adjust based on the actual response structure
+    } catch (error) {
+        console.error('Error fetching jokes:', error);
+    }
+};
 
-        // Fetch jokes on component mount
-        onMounted(fetchJokes);
+// Fetch jokes on component mount
+onMounted(fetchJokes);
+onMounted(fetchCategories);
 
 </script>
 
@@ -82,58 +87,39 @@ const categories = ref([]);
 
         <div class="max-w-7xl mx-auto p-6 lg:p-8">
 
-
-
-
-
-<!-- <div>
-        <h1>Food Jokes</h1>
-        <ul>
-            <li v-for="joke in jokes" :key="joke.id">
-                {{ joke.created_at }} 
-            </li>
-        </ul>
-    </div> -->
-
-
-    <h1 class="text-3xl font-bold mb-4">Chuck Norris Jokes</h1>
-        <div class="flex space-x-4 mb-4">
-            <button
-                v-for="category in categories"
-                :key="category"
-                @click="fetchJokes(category)"
-                class="px-4 py-2 font-semibold text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
-                :class="{ 'bg-blue-700': selectedCategory === category }"
-            >
-                {{ category }}
-            </button>
-        </div>
+            <h1 class="text-3xl font-bold mb-4">Chuck Norris Jokes</h1>
+            <div class="flex space-x-4 mb-4">
+                <button v-for="category in categories" :key="category" @click="fetchJokes(category)"
+                    class="px-4 py-2 font-semibold capitalize text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
+                    :class="{ 'bg-blue-700': selectedCategory === category }">
+                    {{ category }}
+                </button>
+            </div>
 
 
             <div>
-        <!-- <h1 class="text-3xl font-bold mb-4">Food Jokes</h1> -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a
-                href="#"
-                v-for="joke in jokes"
-                :key="joke.id"
-                class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-            >
-                <img
-                    class="object-cover w-full rounded-t-lg h-48 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
-                    :src="joke.icon_url"
-                    alt="Joke Icon"
-                />
-                <div class="flex flex-col justify-between p-4 leading-normal">
-                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">Category</h5>
-                    <span class="text-sm text-gray-600 dark:text-gray-400">{{ joke.created_at }}</span>
-                    <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Id: {{ joke.id }}</p>
-                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Update: {{ joke.updated_at }}</p>
-                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ joke.value }}</p>
+                <!-- <h1 class="text-3xl font-bold mb-4">Food Jokes</h1> -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="#" v-for="joke in jokes" :key="joke.id"
+                        class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <img class="object-cover w-full rounded-t-lg h-48 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
+                            :src="joke.icon_url" alt="Joke Icon" />
+                        <div class="flex flex-col justify-between p-4 leading-normal">
+                            <h5 class="mb-2 text-xl capitalize font-bold tracking-tight text-gray-900 dark:text-white">
+                                <span v-for="(category, index) in joke.categories" :key="index" class="category">
+                                    {{ category }}
+                                </span>
+                            </h5>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">{{ dateTime(joke.created_at)
+                                }}</span>
+                            <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Id: {{ joke.id }}</p>
+                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Update: {{ joke.updated_at }}
+                            </p>
+                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ joke.value }}</p>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-    </div>
+            </div>
 
         </div>
     </div>
