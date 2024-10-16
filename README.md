@@ -12,7 +12,7 @@ This is a step-by-step guide to set up a Laravel application with Vue 3. This ap
 
 Before you begin, ensure you have the following installed:
 
-- [PHP](https://www.php.net/) (8.2 or higher)
+- [PHP](https://www.php.net/) (8.0 or higher)
 - [Composer](https://getcomposer.org/)
 - [Node.js](https://nodejs.org/) (14.x or higher)
 - [NPM](https://www.npmjs.com/) (comes with Node.js)
